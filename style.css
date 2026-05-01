@@ -57,6 +57,13 @@ h1 {
     font-size: 14px;
     color: #555;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.language-selector label span {
+    font-size: 18px;
 }
 
 .language-selector select {
