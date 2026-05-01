@@ -1,6 +1,8 @@
 <?php
 // lang/en.php - English language
 return [
+    'lang_name' => 'English',
+    'lang_flag' => '🇬🇧',
     'title' => 'IPTV Playlist Manager',
     'current_playlist' => 'Current playlist:',
     'upload_new' => 'Upload new playlist',

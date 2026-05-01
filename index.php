@@ -82,10 +82,10 @@ $t = loadTranslations();
                 <div class="language-selector">
                     <label for="language-select"><?php echo htmlspecialchars($t['language'] ?? 'Язык'); ?>:</label>
                     <select id="language-select" onchange="changeLanguage(this.value)">
-                        <?php foreach ($availableLanguages as $code => $name): ?>
+                        <?php foreach ($availableLanguages as $code => $langInfo): ?>
                             <option value="<?php echo htmlspecialchars($code); ?>" 
                                 <?php echo $code === $lang ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($name); ?>
+                                <?php echo htmlspecialchars($langInfo['flag']); ?> <?php echo htmlspecialchars($langInfo['name']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

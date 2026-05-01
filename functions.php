@@ -39,7 +39,7 @@ function setCurrentPlaylist($filename) {
 
 /**
  * Получить список доступных языков
- * @return array Массив языков [код => название]
+ * @return array Массив языков [код => ['name' => название, 'flag' => флаг]]
  */
 function getAvailableLanguages() {
     $languages = [];
@@ -51,16 +51,14 @@ function getAvailableLanguages() {
     foreach ($files as $file) {
         if ($file !== '.' && $file !== '..' && preg_match('/^([a-z]{2})\.php$/i', $file, $matches)) {
             $code = strtolower($matches[1]);
-            // Загружаем файл для получения названия языка из комментария
+            // Загружаем файл для получения названия языка и флага
             $langData = include LANG_DIR . $file;
-            $name = $langData['title'] ?? $code;
-            // Извлекаем название языка из первой строки комментария или используем код
-            if ($code === 'ru') {
-                $name = 'Русский';
-            } elseif ($code === 'en') {
-                $name = 'English';
-            }
-            $languages[$code] = $name;
+            $name = $langData['lang_name'] ?? ($langData['title'] ?? $code);
+            $flag = $langData['lang_flag'] ?? '';
+            $languages[$code] = [
+                'name' => $name,
+                'flag' => $flag
+            ];
         }
     }
     return $languages;
@@ -302,5 +300,19 @@ function sortChannelsByCategoryAndName($channels) {
         return strcasecmp($titleA, $titleB);
     });
     return $channels;
+}
+
+// Обработка запроса на смену языка через AJAX
+if (isset($_GET['set_lang'])) {
+    session_start();
+    $newLang = preg_replace('/[^a-z]/i', '', $_GET['set_lang']);
+    if (!empty($newLang) && file_exists(LANG_DIR . $newLang . '.php')) {
+        $_SESSION['lang'] = $newLang;
+        echo 'OK';
+    } else {
+        http_response_code(400);
+        echo 'Invalid language';
+    }
+    exit;
 }
 ?>
