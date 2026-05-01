@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
 <body>
     <div class="container">
         <div class="header-actions">
-            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? '<?php echo htmlspecialchars($t['back_to_list'] ?? 'Назад к списку'); ?>'); ?></a>
+            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['back_to_list'] ?? 'Назад к списку'); ?></a>
             
             <?php if (count($availableLanguages) > 1): ?>
             <div class="language-selector">
