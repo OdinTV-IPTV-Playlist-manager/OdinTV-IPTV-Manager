@@ -3,6 +3,7 @@
 
 define('PLAYLISTS_DIR', __DIR__ . '/playlists/');
 define('DEFAULT_PLAYLIST', 'MainList.m3u8');
+define('LANG_DIR', __DIR__ . '/lang/');
 
 function getPlaylists() {
     $files = scandir(PLAYLISTS_DIR);
@@ -34,6 +35,101 @@ function setCurrentPlaylist($filename) {
         return true;
     }
     return false;
+}
+
+/**
+ * Получить список доступных языков
+ * @return array Массив языков [код => название]
+ */
+function getAvailableLanguages() {
+    $languages = [];
+    if (!is_dir(LANG_DIR)) {
+        return $languages;
+    }
+    
+    $files = scandir(LANG_DIR);
+    foreach ($files as $file) {
+        if ($file !== '.' && $file !== '..' && preg_match('/^([a-z]{2})\.php$/i', $file, $matches)) {
+            $code = strtolower($matches[1]);
+            // Загружаем файл для получения названия языка из комментария
+            $langData = include LANG_DIR . $file;
+            $name = $langData['title'] ?? $code;
+            // Извлекаем название языка из первой строки комментария или используем код
+            if ($code === 'ru') {
+                $name = 'Русский';
+            } elseif ($code === 'en') {
+                $name = 'English';
+            }
+            $languages[$code] = $name;
+        }
+    }
+    return $languages;
+}
+
+/**
+ * Получить текущий язык
+ * @return string Код текущего языка
+ */
+function getCurrentLanguage() {
+    session_start();
+    if (isset($_SESSION['language']) && file_exists(LANG_DIR . $_SESSION['language'] . '.php')) {
+        return $_SESSION['language'];
+    }
+    // Язык по умолчанию - русский
+    if (file_exists(LANG_DIR . 'ru.php')) {
+        return 'ru';
+    }
+    // Или первый доступный
+    $languages = getAvailableLanguages();
+    return !empty($languages) ? key($languages) : 'ru';
+}
+
+/**
+ * Установить язык
+ * @param string $lang Код языка
+ * @return bool Успешность установки
+ */
+function setLanguage($lang) {
+    session_start();
+    if (file_exists(LANG_DIR . $lang . '.php')) {
+        $_SESSION['language'] = $lang;
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Загрузить переводы для текущего языка
+ * @return array Массив переводов
+ */
+function loadTranslations() {
+    $lang = getCurrentLanguage();
+    $file = LANG_DIR . $lang . '.php';
+    if (file_exists($file)) {
+        return include $file;
+    }
+    return [];
+}
+
+/**
+ * Получить строку перевода
+ * @param string $key Ключ перевода
+ * @param array $params Параметры для подстановки
+ * @return string Переведенная строка
+ */
+function __($key, $params = []) {
+    static $translations = null;
+    if ($translations === null) {
+        $translations = loadTranslations();
+    }
+    
+    $text = $translations[$key] ?? $key;
+    
+    if (!empty($params)) {
+        $text = vsprintf($text, $params);
+    }
+    
+    return $text;
 }
 
 function parseM3U8($filename) {

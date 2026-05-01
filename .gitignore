@@ -1,16 +1,13 @@
-```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
 
 # Dependencies
 vendor/
-composer.lock
 
 # Logs and temp files
 *.log
 *.tmp
-*.swp
 
 # Environment
 .env
@@ -20,12 +17,3 @@ composer.lock
 # Editors
 .vscode/
 .idea/
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Backup files
-*.bak
-*.backup
-```
