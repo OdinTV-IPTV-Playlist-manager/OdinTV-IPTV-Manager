@@ -80,7 +80,16 @@ $t = loadTranslations();
                 <!-- Выбор языка -->
                 <?php if (count($availableLanguages) > 1): ?>
                 <div class="language-selector">
-                    <label for="language-select"><?php echo htmlspecialchars($t['language'] ?? 'Язык'); ?>:</label>
+                    <label for="language-select"><?php echo htmlspecialchars($t['language'] ?? 'Язык'); ?>: 
+                        <?php 
+                        // Получаем флаг текущего языка
+                        $currentFlag = '';
+                        if (isset($availableLanguages[$lang])) {
+                            $currentFlag = $availableLanguages[$lang]['flag'];
+                        }
+                        ?>
+                        <span><?php echo htmlspecialchars($currentFlag); ?></span>
+                    </label>
                     <select id="language-select" onchange="changeLanguage(this.value)">
                         <?php foreach ($availableLanguages as $code => $langInfo): ?>
                             <option value="<?php echo htmlspecialchars($code); ?>" 
