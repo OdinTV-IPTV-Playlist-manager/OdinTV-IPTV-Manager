@@ -406,3 +406,311 @@ h1 {
     background: #1abc9c;
     color: white;
 }
+
+/* ========================================
+   АДАПТИВНЫЙ ДИЗАЙН (Mobile First)
+   ======================================== */
+
+/* Базовые стили для мобильных устройств */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    /* Адаптивная панель инструментов */
+    .toolbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .toolbar h2 {
+        font-size: 1rem;
+        text-align: center;
+    }
+    
+    .toolbar select {
+        width: 100%;
+        max-width: none;
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .actions .btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    /* Адаптивные фильтры */
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+    }
+    
+    .filters label {
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .filters select,
+    .filters input {
+        width: 100%;
+        min-width: auto;
+        padding: 10px;
+        font-size: 16px; /* Предотвращает зум на iOS */
+    }
+    
+    /* Статистика */
+    .stats {
+        padding: 15px;
+        text-align: center;
+    }
+    
+    /* Адаптивная таблица - превращаем в карточки */
+    .channels-table {
+        display: block;
+    }
+    
+    .channels-table thead {
+        display: none; /* Скрываем заголовки на мобильных */
+    }
+    
+    .channels-table tbody tr {
+        display: block;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    
+    .channels-table tbody tr:hover {
+        background: white;
+    }
+    
+    .channels-table td {
+        display: block;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+    
+    .channels-table td:last-child {
+        border-bottom: none;
+    }
+    
+    /* Добавляем подписи к ячейкам */
+    .channels-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #34495e;
+        display: block;
+        margin-bottom: 4px;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+    
+    .channel-logo {
+        max-width: 60px;
+        max-height: 60px;
+    }
+    
+    .channel-url {
+        max-width: 100%;
+        word-break: break-all;
+        white-space: normal;
+    }
+    
+    /* Адаптивные кнопки действий */
+    .actions-container {
+        gap: 10px;
+    }
+    
+    .action-row {
+        justify-content: center;
+    }
+    
+    .action-row .btn {
+        flex: 1 1 auto;
+        min-width: 80px;
+        padding: 8px 10px;
+        font-size: 13px;
+        text-align: center;
+    }
+    
+    /* Модальное окно на мобильных */
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 15px;
+    }
+    
+    .close {
+        font-size: 24px;
+    }
+}
+
+/* Планшеты (768px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .toolbar {
+        padding: 15px;
+    }
+    
+    .actions .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .filters select,
+    .filters input {
+        min-width: 150px;
+    }
+    
+    /* Таблица с горизонтальной прокруткой */
+    .channels-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .channels-table td {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .btn-small {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+    
+    .modal-content {
+        width: 85%;
+        margin: 5% auto;
+    }
+}
+
+/* Большие экраны (десктоп) */
+@media screen and (min-width: 1025px) {
+    .channels-table {
+        display: table;
+    }
+    
+    .channels-table thead {
+        display: table-header-group;
+    }
+    
+    .channels-table tbody tr {
+        display: table-row;
+    }
+    
+    .channels-table td {
+        display: table-cell;
+        padding: 12px;
+    }
+    
+    .channels-table td::before {
+        content: none;
+    }
+}
+
+/* Улучшения для очень маленьких экранов (< 480px) */
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.3rem;
+    }
+    
+    .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .btn-small {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+    
+    .channel-logo {
+        max-width: 50px;
+        max-height: 50px;
+    }
+    
+    .status-badge {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+    
+    .catchup-badge {
+        font-size: 10px;
+        padding: 2px 4px;
+    }
+}
+
+/* Пейзажная ориентация на мобильных */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .modal-content {
+        margin: 2% auto;
+        width: 90%;
+    }
+    
+    .channels-table tbody tr {
+        padding: 10px;
+    }
+}
+
+/* Улучшенная доступность - фокус для тач-устройств */
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover {
+        transform: none;
+    }
+    
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    .channels-table tbody tr:active {
+        background: #f0f0f0;
+    }
+}
+
+/* Печать */
+@media print {
+    .toolbar,
+    .filters,
+    .actions,
+    .btn,
+    .modal {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .channels-table {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .channels-table th {
+        background: #f5f5f5 !important;
+        color: #000 !important;
+    }
+}
