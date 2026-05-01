@@ -1,6 +1,11 @@
 <?php
 require_once 'functions.php';
 
+// Инициализация языка
+$lang = $_SESSION['lang'] ?? 'ru';
+$t = getTranslation($lang);
+$availableLanguages = getAvailableLanguages();
+
 $currentPlaylist = getCurrentPlaylist();
 $playlistPath = PLAYLISTS_DIR . $currentPlaylist;
 $channels = parseM3U8($playlistPath);
@@ -76,19 +81,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?php echo htmlspecialchars($lang); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#3498db">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <title>Редактирование канала</title>
+    <title><?php echo htmlspecialchars($t['edit'] ?? 'Редактирование'); ?> - <?php echo htmlspecialchars($channel['title']); ?></title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Редактирование канала (плейлист: <?php echo htmlspecialchars($currentPlaylist); ?>)</h1>
+        <div class="header-actions">
+            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? 'Назад к списку'); ?></a>
+            
+            <?php if (count($availableLanguages) > 1): ?>
+            <div class="language-selector">
+                <label for="language-select"><?php echo htmlspecialchars($t['language'] ?? 'Язык'); ?>:</label>
+                <select id="language-select" onchange="changeLanguage(this.value)">
+                    <?php foreach ($availableLanguages as $code => $langInfo): ?>
+                        <option value="<?php echo htmlspecialchars($code); ?>" 
+                            <?php echo $code === $lang ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($langInfo['flag']); ?> <?php echo htmlspecialchars($langInfo['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
+        </div>
+        
+        <h1><?php echo htmlspecialchars($t['edit'] ?? 'Редактировать канал'); ?>: <?php echo htmlspecialchars($channel['title']); ?></h1>
         
         <form method="POST" class="edit-form">
             <div class="form-group">
@@ -187,10 +210,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Сохранить</button>
-                <a href="index.php" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-primary"><?php echo htmlspecialchars($t['btn_save'] ?? 'Сохранить'); ?></button>
+                <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['btn_cancel'] ?? 'Отмена'); ?></a>
             </div>
         </form>
     </div>
+    
+    <script>
+    function changeLanguage(lang) {
+        fetch('functions.php?set_lang=' + lang, { credentials: 'same-origin' })
+            .then(() => location.reload());
+    }
+    </script>
 </body>
 </html>

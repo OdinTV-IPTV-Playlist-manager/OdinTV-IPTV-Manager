@@ -1,13 +1,17 @@
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
 
 # Dependencies
-vendor/
+venv/
+.venv/
+node_modules/
 
 # Logs and temp files
 *.log
 *.tmp
+*.swp
 
 # Environment
 .env
@@ -17,3 +21,18 @@ vendor/
 # Editors
 .vscode/
 .idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Build directories
+dist/
+build/
+target/
+```

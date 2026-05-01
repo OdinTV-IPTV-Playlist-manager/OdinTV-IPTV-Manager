@@ -1,6 +1,11 @@
 <?php
 require_once 'functions.php';
 
+// Инициализация языка
+$lang = $_SESSION['lang'] ?? 'ru';
+$t = getTranslation($lang);
+$availableLanguages = getAvailableLanguages();
+
 $message = '';
 $uploadedFile = '';
 $uploadError = '';
@@ -65,19 +70,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?php echo htmlspecialchars($lang); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#3498db">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <title>Загрузка плейлиста</title>
+    <title><?php echo htmlspecialchars($t['upload_new'] ?? 'Загрузка плейлиста'); ?></title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Загрузка плейлиста</h1>
+        <div class="header-actions">
+            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? 'Назад к списку'); ?></a>
+            
+            <?php if (count($availableLanguages) > 1): ?>
+            <div class="language-selector">
+                <label for="language-select"><?php echo htmlspecialchars($t['language'] ?? 'Язык'); ?>:</label>
+                <select id="language-select" onchange="changeLanguage(this.value)">
+                    <?php foreach ($availableLanguages as $code => $langInfo): ?>
+                        <option value="<?php echo htmlspecialchars($code); ?>" 
+                            <?php echo $code === $lang ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($langInfo['flag']); ?> <?php echo htmlspecialchars($langInfo['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
+        </div>
+        
+        <h1><?php echo htmlspecialchars($t['upload_new'] ?? 'Загрузка плейлиста'); ?></h1>
         
         <?php if ($message): ?>
             <div class="message success">
@@ -145,6 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
     </div>
     
     <script>
+    function changeLanguage(lang) {
+        fetch('functions.php?set_lang=' + lang, { credentials: 'same-origin' })
+            .then(() => location.reload());
+    }
+    
     function copyToClipboard(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function() {

@@ -1,6 +1,8 @@
 <?php
 // lang/ru.php - Русский язык
 return [
+    'lang_name' => 'Русский',
+    'lang_flag' => '🇷🇺',
     'title' => 'IPTV Менеджер плейлистов',
     'current_playlist' => 'Текущий плейлист:',
     'upload_new' => 'Загрузить новый плейлист',
