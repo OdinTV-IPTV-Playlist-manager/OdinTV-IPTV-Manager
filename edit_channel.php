@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container">
         <div class="header-actions">
-            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? 'Назад к списку'); ?></a>
+            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? '<?php echo htmlspecialchars($t['back_to_list'] ?? 'Назад к списку'); ?>'); ?></a>
             
             <?php if (count($availableLanguages) > 1): ?>
             <div class="language-selector">
@@ -115,96 +115,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <form method="POST" class="edit-form">
             <div class="form-group">
-                <label for="title">Название канала:</label>
+                <label for="title"><?php echo htmlspecialchars($t['channel_name_label'] ?? 'Название канала:'); ?></label>
                 <input type="text" id="title" name="title" 
                        value="<?php echo htmlspecialchars($channel['title']); ?>" required>
             </div>
             
             <div class="form-group">
-                <label for="group_title">Категория:</label>
+                <label for="group_title"><?php echo htmlspecialchars($t['category_label'] ?? 'Категория:'); ?></label>
                 <input type="text" id="group_title" name="group_title" 
                        value="<?php echo htmlspecialchars($channel['group_title']); ?>">
             </div>
             
             <div class="form-group">
-                <label for="tvg_id">TVG ID:</label>
+                <label for="tvg_id"><?php echo htmlspecialchars($t['tvg_id_label'] ?? 'TVG ID:'); ?></label>
                 <input type="text" id="tvg_id" name="tvg_id" 
                        value="<?php echo htmlspecialchars($channel['tvg_id']); ?>">
             </div>
             
             <div class="form-group">
-                <label for="tvg_name">TVG Name:</label>
+                <label for="tvg_name"><?php echo htmlspecialchars($t['tvg_name_label'] ?? 'TVG Name:'); ?></label>
                 <input type="text" id="tvg_name" name="tvg_name" 
                        value="<?php echo htmlspecialchars($channel['tvg_name']); ?>">
             </div>
             
             <div class="form-group">
-                <label for="tvg_logo">URL логотипа:</label>
+                <label for="tvg_logo"><?php echo htmlspecialchars($t['logo_url_label'] ?? 'URL логотипа:'); ?></label>
                 <input type="url" id="tvg_logo" name="tvg_logo" 
                        value="<?php echo htmlspecialchars($channel['tvg_logo']); ?>">
             </div>
             
             <div class="form-group">
-                <label for="catchup">Тип архива (catchup):</label>
+                <label for="catchup"><?php echo htmlspecialchars($t['catchup_type_label'] ?? 'Тип архива (catchup):'); ?></label>
                 <input type="text" id="catchup" name="catchup" 
                        value="<?php echo htmlspecialchars($channel['catchup']); ?>"
                        placeholder="append, shift, etc.">
             </div>
             
             <div class="form-group">
-                <label for="catchup_days">Дней архива (catchup-days):</label>
+                <label for="catchup_days"><?php echo htmlspecialchars($t['catchup_days_label'] ?? 'Дней архива (catchup-days):'); ?></label>
                 <input type="text" id="catchup_days" name="catchup_days" 
                        value="<?php echo htmlspecialchars($channel['catchup_days']); ?>"
                        placeholder="7">
             </div>
             
             <div class="form-group">
-                <label for="catchup_source">Шаблон ссылки архива (catchup-source):</label>
+                <label for="catchup_source"><?php echo htmlspecialchars($t['catchup_source_label'] ?? 'Шаблон ссылки архива (catchup-source):'); ?></label>
                 <input type="text" id="catchup_source" name="catchup_source" 
                        value="<?php echo htmlspecialchars($channel['catchup_source']); ?>"
                        placeholder="?offset=-${offset}&utcstart=${timestamp}">
             </div>
             
             <div class="form-group">
-                <label for="tvg_rec">tvg-rec (архив, дней):</label>
+                <label for="tvg_rec"><?php echo htmlspecialchars($t['tvg_rec_label'] ?? 'tvg-rec (архив, дней):'); ?></label>
                 <input type="number" id="tvg_rec" name="tvg_rec" 
                        value="<?php echo htmlspecialchars($channel['tvg_rec']); ?>"
                        placeholder="0 или 7" min="0" step="1">
-                <small>0 = нет архива, 7 = архив на 7 дней и т.д. Оставьте поле пустым, чтобы удалить атрибут.</small>
+                <small><?php echo htmlspecialchars($t['tvg_rec_hint'] ?? '0 = нет архива, 7 = архив на 7 дней и т.д. Оставьте поле пустым, чтобы удалить атрибут.'); ?></small>
             </div>
             
             <div class="form-group">
-                <label for="audio_track_lang">Audio Track Language (audio-track):</label>
+                <label for="audio_track_lang"><?php echo htmlspecialchars($t['audio_track_lang_label'] ?? 'Язык аудиодорожки (audio-track):'); ?></label>
                 <input type="text" id="audio_track_lang" name="audio_track_lang" 
                        value="<?php echo htmlspecialchars($channel['audio_track_lang']); ?>"
                        placeholder="rus, eng, etc.">
-                <small>Язык аудиодорожки по умолчанию</small>
+                <small><?php echo htmlspecialchars($t['audio_track_lang_hint'] ?? 'Язык аудиодорожки по умолчанию'); ?></small>
             </div>
             
             <div class="form-group">
-                <label for="audio_track_id">Audio Track ID (EXTVLCOPT):</label>
+                <label for="audio_track_id"><?php echo htmlspecialchars($t['audio_track_id_label'] ?? 'Audio Track ID (EXTVLCOPT):'); ?></label>
                 <input type="text" id="audio_track_id" name="audio_track_id" 
                        value="<?php echo htmlspecialchars($channel['audio_track_id']); ?>"
                        placeholder="2, 3, etc.">
-                <small>Выбор аудиодорожки по умолчанию</small>
+                <small><?php echo htmlspecialchars($t['audio_track_id_hint'] ?? 'Выбор аудиодорожки по умолчанию'); ?></small>
             </div>
             
             <div class="form-group">
-                <label for="user_agent">User-Agent (EXTVLCOPT):</label>
+                <label for="user_agent"><?php echo htmlspecialchars($t['user_agent_label'] ?? 'User-Agent (EXTVLCOPT):'); ?></label>
                 <input type="text" id="user_agent" name="user_agent" 
                        value="<?php echo htmlspecialchars($channel['user_agent']); ?>"
                        placeholder="Mozilla/5.0 ...">
-                <small>User-Agent для запросов к потоку</small>
+                <small><?php echo htmlspecialchars($t['user_agent_hint'] ?? 'User-Agent для запросов к потоку'); ?></small>
             </div>
             
             <div class="form-group">
-                <label for="url">URL канала:</label>
+                <label for="url"><?php echo htmlspecialchars($t['channel_url_label'] ?? 'URL канала:'); ?></label>
                 <input type="url" id="url" name="url" 
                        value="<?php echo htmlspecialchars($channel['url']); ?>" required>
             </div>
             
             <div class="form-group">
-                <label for="duration">Длительность (обычно -1):</label>
+                <label for="duration"><?php echo htmlspecialchars($t['duration_label'] ?? 'Длительность (обычно -1):'); ?></label>
                 <input type="text" id="duration" name="duration" 
                        value="<?php echo htmlspecialchars($channel['duration']); ?>">
             </div>
