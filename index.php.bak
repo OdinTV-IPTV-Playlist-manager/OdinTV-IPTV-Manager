@@ -5,17 +5,10 @@ require_once 'functions.php';
 if (isset($_GET['switch'])) {
     $newPlaylist = $_GET['switch'];
     if (setCurrentPlaylist($newPlaylist)) {
-        $params = [];
-        if (isset($_GET['category'])) $params['category'] = $_GET['category'];
-        if (isset($_GET['search'])) $params['search'] = $_GET['search'];
-        $query = http_build_query($params);
-        header('Location: index.php' . ($query ? '?' . $query : ''));
+        header('Location: index.php');
         exit;
     }
 }
-
-$categoryFilter = isset($_GET['category']) ? $_GET['category'] : 'all';
-$searchFilter = isset($_GET['search']) ? $_GET['search'] : '';
 
 $currentPlaylist = getCurrentPlaylist();
 $playlists = getPlaylists();
@@ -62,16 +55,14 @@ sort($categories);
             <select id="category-filter" onchange="filterChannels()">
                 <option value="all">Все категории</option>
                 <?php foreach ($categories as $category): ?>
-                    <option value="<?php echo htmlspecialchars($category); ?>" 
-                        <?php echo $category === $categoryFilter ? 'selected' : ''; ?>>
+                    <option value="<?php echo htmlspecialchars($category); ?>">
                         <?php echo htmlspecialchars($category); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
             
             <label for="search-input">Поиск:</label>
-            <input type="text" id="search-input" placeholder="Название канала..." 
-                   value="<?php echo htmlspecialchars($searchFilter); ?>" onkeyup="filterChannels()">
+            <input type="text" id="search-input" placeholder="Название канала..." onkeyup="filterChannels()">
         </div>
         
         <div class="stats">
@@ -189,23 +180,6 @@ sort($categories);
     </div>
 
     <script>
-    function updateURLParams() {
-        const category = document.getElementById('category-filter').value;
-        const search = document.getElementById('search-input').value;
-        const url = new URL(window.location.href);
-        if (category !== 'all') {
-            url.searchParams.set('category', category);
-        } else {
-            url.searchParams.delete('category');
-        }
-        if (search !== '') {
-            url.searchParams.set('search', search);
-        } else {
-            url.searchParams.delete('search');
-        }
-        window.history.pushState({}, '', url);
-    }
-
     function filterChannels() {
         const category = document.getElementById('category-filter').value;
         const search = document.getElementById('search-input').value.toLowerCase();
@@ -224,10 +198,6 @@ sort($categories);
                 row.style.display = 'none';
             }
         });
-        
-        const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-        document.getElementById('total-channels').textContent = visibleRows.length;
-        updateURLParams();
     }
     
     function checkChannel(index) {
@@ -260,7 +230,6 @@ sort($categories);
     
     function deleteChannel(index) {
         if (confirm('Вы уверены, что хотите удалить этот канал?')) {
-            const currentUrl = window.location.href;
             fetch('delete_channel.php', {
                 method: 'POST',
                 headers: {
@@ -271,7 +240,7 @@ sort($categories);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = currentUrl;
+                    location.reload();
                 } else {
                     alert('Ошибка при удалении канала');
                 }
@@ -280,17 +249,11 @@ sort($categories);
     }
     
     function switchPlaylist(playlist) {
-        let url = 'index.php?switch=' + encodeURIComponent(playlist);
-        const category = document.getElementById('category-filter').value;
-        const search = document.getElementById('search-input').value;
-        if (category !== 'all') url += '&category=' + encodeURIComponent(category);
-        if (search !== '') url += '&search=' + encodeURIComponent(search);
-        window.location.href = url;
+        window.location.href = 'index.php?switch=' + encodeURIComponent(playlist);
     }
 
     function moveChannel(index, target) {
-        if (confirm(`Переместить канал в плейлист ${target}.m3u8?`)) {
-            const currentUrl = window.location.href;
+        if (confirm(`Переместить канал в плейлист ${target}.m3u?`)) {
             fetch('move_channel.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -299,7 +262,7 @@ sort($categories);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = currentUrl;
+                    location.reload();
                 } else {
                     alert('Ошибка: ' + (data.error || 'неизвестная ошибка'));
                 }
@@ -308,7 +271,7 @@ sort($categories);
         }
     }
 
-    // Модальное окно
+    // Переменные для модального окна
     var modal = document.getElementById('playerModal');
     var span = document.getElementsByClassName('close')[0];
     var player = document.getElementById('player');
@@ -378,10 +341,38 @@ sort($categories);
                 alert('Ошибка при загрузке канала');
             });
     }
+
+    // Функция копирования (если понадобится)
+    function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Ссылка скопирована в буфер обмена');
+            }).catch(function(err) {
+                console.error('Ошибка копирования: ', err);
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    }
     
-    document.addEventListener('DOMContentLoaded', function() {
-        filterChannels();
-    });
+    function fallbackCopy(text) {
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            var successful = document.execCommand('copy');
+            if (successful) {
+                alert('Ссылка скопирована в буфер обмена');
+            } else {
+                alert('Не удалось скопировать ссылку');
+            }
+        } catch (err) {
+            alert('Не удалось скопировать ссылку');
+        }
+        document.body.removeChild(textarea);
+    }
     </script>
 </body>
 </html>

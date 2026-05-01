@@ -5,6 +5,7 @@ require_once 'functions.php';
 if (isset($_GET['switch'])) {
     $newPlaylist = $_GET['switch'];
     if (setCurrentPlaylist($newPlaylist)) {
+        // Сохраняем текущие параметры фильтрации перед редиректом
         $params = [];
         if (isset($_GET['category'])) $params['category'] = $_GET['category'];
         if (isset($_GET['search'])) $params['search'] = $_GET['search'];
@@ -14,6 +15,7 @@ if (isset($_GET['switch'])) {
     }
 }
 
+// Читаем фильтры из URL
 $categoryFilter = isset($_GET['category']) ? $_GET['category'] : 'all';
 $searchFilter = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -189,6 +191,7 @@ sort($categories);
     </div>
 
     <script>
+    // Функция обновления URL параметров (без перезагрузки)
     function updateURLParams() {
         const category = document.getElementById('category-filter').value;
         const search = document.getElementById('search-input').value;
@@ -206,6 +209,7 @@ sort($categories);
         window.history.pushState({}, '', url);
     }
 
+    // Фильтрация каналов
     function filterChannels() {
         const category = document.getElementById('category-filter').value;
         const search = document.getElementById('search-input').value.toLowerCase();
@@ -225,8 +229,11 @@ sort($categories);
             }
         });
         
+        // Обновляем счётчик видимых каналов
         const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
         document.getElementById('total-channels').textContent = visibleRows.length;
+        
+        // Сохраняем параметры в URL
         updateURLParams();
     }
     
@@ -260,6 +267,7 @@ sort($categories);
     
     function deleteChannel(index) {
         if (confirm('Вы уверены, что хотите удалить этот канал?')) {
+            // Сохраняем текущие параметры фильтрации перед перезагрузкой
             const currentUrl = window.location.href;
             fetch('delete_channel.php', {
                 method: 'POST',
@@ -271,6 +279,7 @@ sort($categories);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Перезагружаем с сохранением параметров
                     window.location.href = currentUrl;
                 } else {
                     alert('Ошибка при удалении канала');
@@ -281,6 +290,7 @@ sort($categories);
     
     function switchPlaylist(playlist) {
         let url = 'index.php?switch=' + encodeURIComponent(playlist);
+        // Сохраняем текущие фильтры
         const category = document.getElementById('category-filter').value;
         const search = document.getElementById('search-input').value;
         if (category !== 'all') url += '&category=' + encodeURIComponent(category);
@@ -308,7 +318,7 @@ sort($categories);
         }
     }
 
-    // Модальное окно
+    // Переменные для модального окна
     var modal = document.getElementById('playerModal');
     var span = document.getElementsByClassName('close')[0];
     var player = document.getElementById('player');
@@ -379,7 +389,10 @@ sort($categories);
             });
     }
     
+    // При загрузке страницы применяем фильтры из URL (если они есть)
     document.addEventListener('DOMContentLoaded', function() {
+        // Убедимся, что фильтры уже установлены из PHP (в атрибутах selected и value)
+        // и вызовем filterChannels для применения скрытия строк
         filterChannels();
     });
     </script>
