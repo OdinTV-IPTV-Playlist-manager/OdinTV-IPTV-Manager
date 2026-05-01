@@ -32,15 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['url_import'])) {
         if ($httpCode === 200 && $content) {
             if (file_put_contents($destination, $content)) {
                 $uploadedFile = $filename;
-                $message = 'Плейлист успешно загружен по ссылке';
+                $message = $t['playlist_uploaded_url_success'] ?? 'Плейлист успешно загружен по ссылке';
             } else {
-                $uploadError = 'Ошибка сохранения файла';
+                $uploadError = $t['file_save_error'] ?? 'Ошибка сохранения файла';
             }
         } else {
-            $uploadError = 'Не удалось загрузить файл по ссылке (HTTP ' . $httpCode . ')';
+            $uploadError = sprintf($t['url_download_failed'] ?? 'Не удалось загрузить файл по ссылке (HTTP %s)', $httpCode);
         }
     } else {
-        $uploadError = 'Некорректная ссылка';
+        $uploadError = $t['invalid_url'] ?? 'Некорректная ссылка';
     }
 }
 
@@ -56,15 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
             
             if (move_uploaded_file($file['tmp_name'], $destination)) {
                 $uploadedFile = $file['name'];
-                $message = 'Плейлист успешно загружен';
+                $message = $t['playlist_uploaded_success'] ?? 'Плейлист успешно загружен';
             } else {
-                $uploadError = 'Ошибка при сохранении файла';
+                $uploadError = $t['file_save_error'] ?? 'Ошибка при сохранении файла';
             }
         } else {
-            $uploadError = 'Пожалуйста, загрузите файл с расширением .m3u или .m3u8';
+            $uploadError = $t['invalid_file_extension'] ?? 'Пожалуйста, загрузите файл с расширением .m3u или .m3u8';
         }
     } else {
-        $uploadError = 'Ошибка при загрузке файла';
+        $uploadError = $t['file_upload_error'] ?? 'Ошибка при загрузке файла';
     }
 }
 ?>
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
 <body>
     <div class="container">
         <div class="header-actions">
-            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? 'Назад к списку'); ?></a>
+            <a href="index.php" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? '<?php echo htmlspecialchars($t['back_to_list'] ?? 'Назад к списку'); ?>'); ?></a>
             
             <?php if (count($availableLanguages) > 1): ?>
             <div class="language-selector">
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
                 <?php if ($uploadedFile): ?>
                     <br>
                     <a href="index.php?switch=<?php echo urlencode($uploadedFile); ?>" class="btn btn-small btn-primary">
-                        Переключиться на этот плейлист
+                        <?php echo htmlspecialchars($t['switch_to_playlist'] ?? 'Переключиться на этот плейлист'); ?>
                     </a>
                 <?php endif; ?>
             </div>
@@ -119,34 +119,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
         <?php endif; ?>
         
         <div class="upload-section">
-            <h3>Загрузка с компьютера</h3>
+            <h3><?php echo htmlspecialchars($t['upload_from_computer'] ?? 'Загрузка с компьютера'); ?></h3>
             <form method="POST" enctype="multipart/form-data" class="upload-form">
                 <div class="form-group">
-                    <label for="playlist">Выберите M3U/M3U8 файл:</label>
+                    <label for="playlist"><?php echo htmlspecialchars($t['select_m3u_file'] ?? 'Выберите M3U/M3U8 файл:'); ?></label>
                     <input type="file" id="playlist" name="playlist" accept=".m3u,.m3u8" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Загрузить файл</button>
+                    <button type="submit" class="btn btn-primary"><?php echo htmlspecialchars($t['upload_file_btn'] ?? 'Загрузить файл'); ?></button>
                 </div>
             </form>
         </div>
         
         <div class="upload-section">
-            <h3>Загрузка по ссылке</h3>
+            <h3><?php echo htmlspecialchars($t['upload_from_url'] ?? 'Загрузка по ссылке'); ?></h3>
             <form method="POST" class="upload-form">
                 <div class="form-group">
-                    <label for="remote_url">Ссылка на плейлист (m3u/m3u8):</label>
+                    <label for="remote_url"><?php echo htmlspecialchars($t['playlist_url_label'] ?? 'Ссылка на плейлист (m3u/m3u8):'); ?></label>
                     <input type="url" id="remote_url" name="remote_url" 
                            placeholder="https://example.com/playlist.m3u8" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" name="url_import" class="btn btn-primary">Загрузить по ссылке</button>
+                    <button type="submit" name="url_import" class="btn btn-primary"><?php echo htmlspecialchars($t['upload_url_btn'] ?? 'Загрузить по ссылке'); ?></button>
                 </div>
             </form>
         </div>
         
         <div class="info">
-            <h3>Существующие плейлисты:</h3>
+            <h3><?php echo htmlspecialchars($t['existing_playlists'] ?? 'Существующие плейлисты:'); ?></h3>
             <ul>
                 <?php
                 $files = scandir(PLAYLISTS_DIR);
@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
     function copyToClipboard(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function() {
-                alert('Ссылка скопирована в буфер обмена');
+                alert('<?php echo htmlspecialchars($t['link_copied'] ?? 'Ссылка скопирована в буфер обмена'); ?>');
             }).catch(function() {
                 fallbackCopy(text);
             });
@@ -194,9 +194,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
         textarea.select();
         try {
             document.execCommand('copy');
-            alert('Ссылка скопирована в буфер обмена');
+            alert('<?php echo htmlspecialchars($t['link_copied'] ?? 'Ссылка скопирована в буфер обмена'); ?>');
         } catch (err) {
-            alert('Не удалось скопировать ссылку. Скопируйте вручную: ' + text);
+            alert('<?php echo htmlspecialchars($t['copy_failed'] ?? 'Не удалось скопировать ссылку. Скопируйте вручную: '); ?>' + text);
         }
         document.body.removeChild(textarea);
     }

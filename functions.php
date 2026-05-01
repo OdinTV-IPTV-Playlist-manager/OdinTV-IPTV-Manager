@@ -97,6 +97,24 @@ function setLanguage($lang) {
 }
 
 /**
+ * Получить переводы для указанного языка
+ * @param string $lang Код языка
+ * @return array Массив переводов
+ */
+function getTranslation($lang) {
+    $file = LANG_DIR . $lang . '.php';
+    if (file_exists($file)) {
+        return include $file;
+    }
+    // Возвращаем русский как fallback
+    $file = LANG_DIR . 'ru.php';
+    if (file_exists($file)) {
+        return include $file;
+    }
+    return [];
+}
+
+/**
  * Загрузить переводы для текущего языка
  * @return array Массив переводов
  */
