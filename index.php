@@ -1,6 +1,19 @@
 <?php
 require_once 'functions.php';
 
+// Обработка смены языка
+if (isset($_GET['lang'])) {
+    $newLang = $_GET['lang'];
+    if (setLanguage($newLang)) {
+        $params = [];
+        if (isset($_GET['category'])) $params['category'] = $_GET['category'];
+        if (isset($_GET['search'])) $params['search'] = $_GET['search'];
+        $query = http_build_query($params);
+        header('Location: index.php' . ($query ? '?' . $query : ''));
+        exit;
+    }
+}
+
 // Обработка смены плейлиста
 if (isset($_GET['switch'])) {
     $newPlaylist = $_GET['switch'];
@@ -23,10 +36,15 @@ $mainPlaylistPath = PLAYLISTS_DIR . $currentPlaylist;
 $channels = parseM3U8($mainPlaylistPath);
 $categories = array_unique(array_column($channels, 'group_title'));
 sort($categories);
+
+// Загружаем переводы
+$lang = getCurrentLanguage();
+$availableLanguages = getAvailableLanguages();
+$t = loadTranslations();
 ?>
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?php echo htmlspecialchars($lang); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -34,17 +52,17 @@ sort($categories);
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="format-detection" content="telephone=no">
-    <title>IPTV Менеджер плейлистов</title>
+    <title><?php echo htmlspecialchars($t['title'] ?? 'IPTV Менеджер плейлистов'); ?></title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
     <div class="container">
-        <h1>IPTV Менеджер плейлистов</h1>
+        <h1><?php echo htmlspecialchars($t['title'] ?? 'IPTV Менеджер плейлистов'); ?></h1>
         
         <div class="toolbar">
             <div>
-                <h2>Текущий плейлист: 
+                <h2><?php echo htmlspecialchars($t['current_playlist'] ?? 'Текущий плейлист:'); ?> 
                     <select onchange="switchPlaylist(this.value)">
                         <?php foreach ($playlists as $pl): ?>
                             <option value="<?php echo htmlspecialchars($pl); ?>" 
@@ -56,15 +74,30 @@ sort($categories);
                 </h2>
             </div>
             <div class="actions">
-                <a href="upload.php" class="btn btn-primary">Загрузить новый плейлист</a>
-                <button onclick="location.reload()" class="btn btn-secondary">Обновить список</button>
+                <a href="upload.php" class="btn btn-primary"><?php echo htmlspecialchars($t['upload_new'] ?? 'Загрузить новый плейлист'); ?></a>
+                <button onclick="location.reload()" class="btn btn-secondary"><?php echo htmlspecialchars($t['refresh_list'] ?? 'Обновить список'); ?></button>
+                
+                <!-- Выбор языка -->
+                <?php if (count($availableLanguages) > 1): ?>
+                <div class="language-selector">
+                    <label for="language-select"><?php echo htmlspecialchars($t['language'] ?? 'Язык'); ?>:</label>
+                    <select id="language-select" onchange="changeLanguage(this.value)">
+                        <?php foreach ($availableLanguages as $code => $name): ?>
+                            <option value="<?php echo htmlspecialchars($code); ?>" 
+                                <?php echo $code === $lang ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($name); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
         
         <div class="filters">
-            <label for="category-filter">Фильтр по категории:</label>
+            <label for="category-filter"><?php echo htmlspecialchars($t['filter_category'] ?? 'Фильтр по категории:'); ?></label>
             <select id="category-filter" onchange="filterChannels()">
-                <option value="all">Все категории</option>
+                <option value="all"><?php echo htmlspecialchars($t['all_categories'] ?? 'Все категории'); ?></option>
                 <?php foreach ($categories as $category): ?>
                     <option value="<?php echo htmlspecialchars($category); ?>" 
                         <?php echo $category === $categoryFilter ? 'selected' : ''; ?>>
@@ -73,53 +106,53 @@ sort($categories);
                 <?php endforeach; ?>
             </select>
             
-            <label for="search-input">Поиск:</label>
-            <input type="text" id="search-input" placeholder="Название канала..." 
+            <label for="search-input"><?php echo htmlspecialchars($t['search'] ?? 'Поиск:'); ?></label>
+            <input type="text" id="search-input" placeholder="<?php echo htmlspecialchars($t['search_placeholder'] ?? 'Название канала...'); ?>" 
                    value="<?php echo htmlspecialchars($searchFilter); ?>" onkeyup="filterChannels()">
         </div>
         
         <div class="stats">
-            Всего каналов: <span id="total-channels"><?php echo count($channels); ?></span>
+            <?php echo htmlspecialchars($t['total_channels'] ?? 'Всего каналов:'); ?> <span id="total-channels"><?php echo count($channels); ?></span>
         </div>
         
         <table class="channels-table" id="channels-table">
             <thead>
                 <tr>
-                    <th>Логотип</th>
-                    <th>Название</th>
-                    <th>Категория</th>
-                    <th>TVG ID</th>
-                    <th>Архив</th>
-                    <th>Опции</th>
-                    <th>URL</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
+                    <th><?php echo htmlspecialchars($t['logo'] ?? 'Логотип'); ?></th>
+                    <th><?php echo htmlspecialchars($t['name'] ?? 'Название'); ?></th>
+                    <th><?php echo htmlspecialchars($t['category'] ?? 'Категория'); ?></th>
+                    <th><?php echo htmlspecialchars($t['tvg_id'] ?? 'TVG ID'); ?></th>
+                    <th><?php echo htmlspecialchars($t['archive'] ?? 'Архив'); ?></th>
+                    <th><?php echo htmlspecialchars($t['options'] ?? 'Опции'); ?></th>
+                    <th><?php echo htmlspecialchars($t['url'] ?? 'URL'); ?></th>
+                    <th><?php echo htmlspecialchars($t['status'] ?? 'Статус'); ?></th>
+                    <th><?php echo htmlspecialchars($t['actions'] ?? 'Действия'); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($channels as $index => $channel): ?>
                 <tr data-category="<?php echo htmlspecialchars($channel['group_title']); ?>" 
                     data-title="<?php echo htmlspecialchars($channel['title']); ?>">
-                    <td data-label="Логотип">
+                    <td data-label="<?php echo htmlspecialchars($t['logo'] ?? 'Логотип'); ?>">
                         <?php if (!empty($channel['tvg_logo'])): ?>
                             <img src="<?php echo htmlspecialchars($channel['tvg_logo']); ?>" 
                                  alt="logo" class="channel-logo" 
                                  onerror="this.style.display='none'">
                         <?php endif; ?>
                     </td>
-                    <td data-label="Название" class="channel-title"><?php echo htmlspecialchars($channel['title']); ?></td>
-                    <td data-label="Категория"><?php echo htmlspecialchars($channel['group_title']); ?></td>
-                    <td data-label="TVG ID"><?php echo htmlspecialchars($channel['tvg_id']); ?></td>
-                    <td data-label="Архив">
+                    <td data-label="<?php echo htmlspecialchars($t['name'] ?? 'Название'); ?>" class="channel-title"><?php echo htmlspecialchars($channel['title']); ?></td>
+                    <td data-label="<?php echo htmlspecialchars($t['category'] ?? 'Категория'); ?>"><?php echo htmlspecialchars($channel['group_title']); ?></td>
+                    <td data-label="<?php echo htmlspecialchars($t['tvg_id'] ?? 'TVG ID'); ?>"><?php echo htmlspecialchars($channel['tvg_id']); ?></td>
+                    <td data-label="<?php echo htmlspecialchars($t['archive'] ?? 'Архив'); ?>">
                         <?php
                         $archiveText = '';
                         $hasArchive = false;
                         if (!empty($channel['catchup'])) {
                             $days = $channel['catchup_days'] ?: '?';
-                            $archiveText = "📺 Архив: {$channel['catchup']} ({$days} дн)";
+                            $archiveText = sprintf($t['archive_badge'] ?? '📺 Архив: %s (%s дн)', $channel['catchup'], $days);
                             $hasArchive = true;
                         } elseif (!empty($channel['tvg_rec']) && $channel['tvg_rec'] > 0) {
-                            $archiveText = "📺 Архив (tvg-rec: {$channel['tvg_rec']} дн)";
+                            $archiveText = sprintf($t['archive_rec'] ?? '📺 Архив (tvg-rec: %s дн)', $channel['tvg_rec']);
                             $hasArchive = true;
                         }
                         ?>
@@ -128,10 +161,10 @@ sort($categories);
                                 <?php echo htmlspecialchars($archiveText); ?>
                             </span>
                         <?php else: ?>
-                            <span class="catchup-none">—</span>
+                            <span class="catchup-none"><?php echo htmlspecialchars($t['no_archive'] ?? '—'); ?></span>
                         <?php endif; ?>
                     </td>
-                    <td data-label="Опции" class="channel-options">
+                    <td data-label="<?php echo htmlspecialchars($t['options'] ?? 'Опции'); ?>" class="channel-options">
                         <?php
                         $hasAudioLang = !empty($channel['audio_track_lang']);
                         $hasAudioTrackId = false;
@@ -142,37 +175,37 @@ sort($categories);
                         }
                         ?>
                         <?php if ($hasAudioLang): ?>
-                            <span class="option-badge" title="Язык аудио: <?php echo htmlspecialchars($channel['audio_track_lang']); ?>">🔊</span>
+                            <span class="option-badge" title="<?php echo htmlspecialchars(sprintf($t['audio_lang_tooltip'] ?? 'Язык аудио: %s', $channel['audio_track_lang'])); ?>">🔊</span>
                         <?php endif; ?>
                         <?php if ($hasAudioTrackId): ?>
-                            <span class="option-badge" title="Audio Track ID задан">🎚️</span>
+                            <span class="option-badge" title="<?php echo htmlspecialchars($t['audio_track_tooltip'] ?? 'Audio Track ID задан'); ?>">🎚️</span>
                         <?php endif; ?>
                         <?php if ($hasUserAgent): ?>
-                            <span class="option-badge" title="User-Agent задан">🖥️</span>
+                            <span class="option-badge" title="<?php echo htmlspecialchars($t['user_agent_tooltip'] ?? 'User-Agent задан'); ?>">🖥️</span>
                         <?php endif; ?>
                         <?php if (!$hasAudioLang && !$hasAudioTrackId && !$hasUserAgent): ?>
-                            <span class="option-none">—</span>
+                            <span class="option-none"><?php echo htmlspecialchars($t['no_options'] ?? '—'); ?></span>
                         <?php endif; ?>
                     </td>
-                    <td data-label="URL" class="channel-url"><?php echo htmlspecialchars($channel['url']); ?></td>
-                    <td data-label="Статус">
+                    <td data-label="<?php echo htmlspecialchars($t['url'] ?? 'URL'); ?>" class="channel-url"><?php echo htmlspecialchars($channel['url']); ?></td>
+                    <td data-label="<?php echo htmlspecialchars($t['status'] ?? 'Статус'); ?>">
                         <span class="status-badge status-unknown" id="status-<?php echo $index; ?>">
-                            Не проверен
+                            <?php echo htmlspecialchars($t['not_checked'] ?? 'Не проверен'); ?>
                         </span>
                     </td>
-                    <td data-label="Действия" class="actions">
+                    <td data-label="<?php echo htmlspecialchars($t['actions'] ?? 'Действия'); ?>" class="actions">
                         <div class="actions-container">
                             <div class="action-row">
-                                <button onclick="checkChannel(<?php echo $index; ?>)" class="btn btn-small btn-check">Проверить</button>
-                                <button onclick="playChannel(<?php echo $index; ?>)" class="btn btn-small btn-play">Смотреть</button>
-                                <a href="edit_channel.php?index=<?php echo $index; ?>" class="btn btn-small btn-edit">Редактировать</a>
-                                <button onclick="deleteChannel(<?php echo $index; ?>)" class="btn btn-small btn-delete">Удалить</button>
+                                <button onclick="checkChannel(<?php echo $index; ?>)" class="btn btn-small btn-check"><?php echo htmlspecialchars($t['check'] ?? 'Проверить'); ?></button>
+                                <button onclick="playChannel(<?php echo $index; ?>)" class="btn btn-small btn-play"><?php echo htmlspecialchars($t['watch'] ?? 'Смотреть'); ?></button>
+                                <a href="edit_channel.php?index=<?php echo $index; ?>" class="btn btn-small btn-edit"><?php echo htmlspecialchars($t['edit'] ?? 'Редактировать'); ?></a>
+                                <button onclick="deleteChannel(<?php echo $index; ?>)" class="btn btn-small btn-delete"><?php echo htmlspecialchars($t['delete'] ?? 'Удалить'); ?></button>
                             </div>
                             <div class="action-row">
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'CHECK')" class="btn btn-small btn-move-check">CHECK</button>
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'BAD')" class="btn btn-small btn-move-bad">BAD</button>
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'GOOD')" class="btn btn-small btn-move-good">GOOD</button>
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'WORK')" class="btn btn-small btn-move-work">WORK</button>
+                                <button onclick="moveChannel(<?php echo $index; ?>, 'CHECK')" class="btn btn-small btn-move-check"><?php echo htmlspecialchars($t['move_check'] ?? 'CHECK'); ?></button>
+                                <button onclick="moveChannel(<?php echo $index; ?>, 'BAD')" class="btn btn-small btn-move-bad"><?php echo htmlspecialchars($t['move_bad'] ?? 'BAD'); ?></button>
+                                <button onclick="moveChannel(<?php echo $index; ?>, 'GOOD')" class="btn btn-small btn-move-good"><?php echo htmlspecialchars($t['move_good'] ?? 'GOOD'); ?></button>
+                                <button onclick="moveChannel(<?php echo $index; ?>, 'WORK')" class="btn btn-small btn-move-work"><?php echo htmlspecialchars($t['move_work'] ?? 'WORK'); ?></button>
                             </div>
                         </div>
                     </td>
@@ -187,7 +220,7 @@ sort($categories);
         <div class="modal-content">
             <span class="close">&times;</span>
             <video id="player" controls preload="auto" width="100%" height="auto">
-                <p class="vjs-no-js">Для просмотра видео включите JavaScript</p>
+                <p class="vjs-no-js"><?php echo htmlspecialchars($t['video_no_js'] ?? 'Для просмотра видео включите JavaScript'); ?></p>
             </video>
         </div>
     </div>
@@ -237,7 +270,7 @@ sort($categories);
     function checkChannel(index) {
         const statusSpan = document.getElementById('status-' + index);
         statusSpan.className = 'status-badge status-checking';
-        statusSpan.textContent = 'Проверка...';
+        statusSpan.textContent = '<?php echo addslashes($t['checking'] ?? 'Проверка...'); ?>';
         
         fetch('check_channel.php', {
             method: 'POST',
@@ -250,20 +283,20 @@ sort($categories);
         .then(data => {
             if (data.working) {
                 statusSpan.className = 'status-badge status-working';
-                statusSpan.textContent = 'Работает (' + data.method + ', код ' + data.code + ')';
+                statusSpan.textContent = '<?php echo addslashes(sprintf($t['working'] ?? 'Работает (%s, код %s)', '%s', '%s')); ?>'.replace('%s', data.method).replace('%s', data.code);
             } else {
                 statusSpan.className = 'status-badge status-dead';
-                statusSpan.textContent = 'Не работает: ' + (data.reason || 'Ошибка') + ' (код ' + data.code + ')';
+                statusSpan.textContent = '<?php echo addslashes(sprintf($t['not_working'] ?? 'Не работает: %s (код %s)', '%s', '%s')); ?>'.replace('%s', data.reason || '<?php echo addslashes($t['error_request'] ?? 'Ошибка'); ?>').replace('%s', data.code);
             }
         })
         .catch(error => {
             statusSpan.className = 'status-badge status-dead';
-            statusSpan.textContent = 'Ошибка запроса';
+            statusSpan.textContent = '<?php echo addslashes($t['error_request'] ?? 'Ошибка запроса'); ?>';
         });
     }
     
     function deleteChannel(index) {
-        if (confirm('Вы уверены, что хотите удалить этот канал?')) {
+        if (confirm('<?php echo addslashes($t['confirm_delete'] ?? 'Вы уверены, что хотите удалить этот канал?'); ?>')) {
             const currentUrl = window.location.href;
             fetch('delete_channel.php', {
                 method: 'POST',
@@ -277,7 +310,7 @@ sort($categories);
                 if (data.success) {
                     window.location.href = currentUrl;
                 } else {
-                    alert('Ошибка при удалении канала');
+                    alert('<?php echo addslashes($t['delete_error'] ?? 'Ошибка при удалении канала'); ?>');
                 }
             });
         }
@@ -293,7 +326,7 @@ sort($categories);
     }
 
     function moveChannel(index, target) {
-        if (confirm(`Переместить канал в плейлист ${target}.m3u8?`)) {
+        if (confirm('<?php echo addslashes(sprintf($t['confirm_move'] ?? 'Переместить канал в плейлист %s.m3u8?', '%s')); ?>'.replace('%s', target))) {
             const currentUrl = window.location.href;
             fetch('move_channel.php', {
                 method: 'POST',
@@ -305,11 +338,20 @@ sort($categories);
                 if (data.success) {
                     window.location.href = currentUrl;
                 } else {
-                    alert('Ошибка: ' + (data.error || 'неизвестная ошибка'));
+                    alert('<?php echo addslashes(sprintf($t['move_error'] ?? 'Ошибка: %s', '%s')); ?>'.replace('%s', data.error || '<?php echo addslashes($t['move_request_error'] ?? 'неизвестная ошибка'); ?>'));
                 }
             })
-            .catch(error => alert('Ошибка запроса: ' + error));
+            .catch(error => alert('<?php echo addslashes(sprintf($t['move_request_error'] ?? 'Ошибка запроса: %s', '%s')); ?>'.replace('%s', error)));
         }
+    }
+    
+    function changeLanguage(lang) {
+        let url = 'index.php?lang=' + lang;
+        const category = document.getElementById('category-filter').value;
+        const search = document.getElementById('search-input').value;
+        if (category !== 'all') url += '&category=' + encodeURIComponent(category);
+        if (search !== '') url += '&search=' + encodeURIComponent(search);
+        window.location.href = url;
     }
 
     // Модальное окно
