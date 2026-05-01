@@ -88,7 +88,7 @@ $t = loadTranslations();
                             $currentFlag = $availableLanguages[$lang]['flag'];
                         }
                         ?>
-                        <span><?php echo htmlspecialchars($currentFlag); ?></span>
+                        <span><?php echo $currentFlag; ?></span>
                     </label>
                     <select id="language-select" onchange="changeLanguage(this.value)">
                         <?php foreach ($availableLanguages as $code => $langInfo): ?>
