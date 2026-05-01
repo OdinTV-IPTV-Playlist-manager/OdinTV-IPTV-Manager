@@ -96,17 +96,17 @@ sort($categories);
                 <?php foreach ($channels as $index => $channel): ?>
                 <tr data-category="<?php echo htmlspecialchars($channel['group_title']); ?>" 
                     data-title="<?php echo htmlspecialchars($channel['title']); ?>">
-                    <td>
+                    <td data-label="Логотип">
                         <?php if (!empty($channel['tvg_logo'])): ?>
                             <img src="<?php echo htmlspecialchars($channel['tvg_logo']); ?>" 
                                  alt="logo" class="channel-logo" 
                                  onerror="this.style.display='none'">
                         <?php endif; ?>
                     </td>
-                    <td class="channel-title"><?php echo htmlspecialchars($channel['title']); ?></td>
-                    <td><?php echo htmlspecialchars($channel['group_title']); ?></td>
-                    <td><?php echo htmlspecialchars($channel['tvg_id']); ?></td>
-                    <td>
+                    <td data-label="Название" class="channel-title"><?php echo htmlspecialchars($channel['title']); ?></td>
+                    <td data-label="Категория"><?php echo htmlspecialchars($channel['group_title']); ?></td>
+                    <td data-label="TVG ID"><?php echo htmlspecialchars($channel['tvg_id']); ?></td>
+                    <td data-label="Архив">
                         <?php
                         $archiveText = '';
                         $hasArchive = false;
@@ -127,7 +127,7 @@ sort($categories);
                             <span class="catchup-none">—</span>
                         <?php endif; ?>
                     </td>
-                    <td class="channel-options">
+                    <td data-label="Опции" class="channel-options">
                         <?php
                         $hasAudioLang = !empty($channel['audio_track_lang']);
                         $hasAudioTrackId = false;
@@ -150,13 +150,13 @@ sort($categories);
                             <span class="option-none">—</span>
                         <?php endif; ?>
                     </td>
-                    <td class="channel-url"><?php echo htmlspecialchars($channel['url']); ?></td>
-                    <td>
+                    <td data-label="URL" class="channel-url"><?php echo htmlspecialchars($channel['url']); ?></td>
+                    <td data-label="Статус">
                         <span class="status-badge status-unknown" id="status-<?php echo $index; ?>">
                             Не проверен
                         </span>
                     </td>
-                    <td class="actions">
+                    <td data-label="Действия" class="actions">
                         <div class="actions-container">
                             <div class="action-row">
                                 <button onclick="checkChannel(<?php echo $index; ?>)" class="btn btn-small btn-check">Проверить</button>
