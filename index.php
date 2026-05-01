@@ -594,7 +594,14 @@ sort($playlists);
     </div>
     
     <script>
-        const channelsData = <?= json_encode(parseM3U(file_get_contents($currentPlaylistPath))) ?>;
+        <?php
+        $channels = parseM3U(file_get_contents($currentPlaylistPath));
+        $jsonChannels = json_encode($channels, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+        if ($jsonChannels === false) {
+            $jsonChannels = '[]';
+        }
+        ?>
+        const channelsData = <?= $jsonChannels ?>;
         
         function openEditModal(index) {
             const channel = channelsData[index];
