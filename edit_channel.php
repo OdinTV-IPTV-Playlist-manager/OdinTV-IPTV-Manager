@@ -222,5 +222,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             .then(() => location.reload());
     }
     </script>
+    
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-counter">
+                <a href="https://www.liveinternet.ru/click" target="_blank">
+                    <img id="licnt3DD7" width="31" height="31" style="border:0" 
+                         title="LiveInternet"
+                         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7"
+                         alt=""/>
+                </a>
+                <script>(function(d,s){d.getElementById("licnt3DD7").src=
+                    "https://counter.yadro.ru/hit?t50.11;r"+escape(d.referrer)+
+                    ((typeof(s)=="undefined")?"":";s"+s.width+"*"+s.height+"*"+
+                    (s.colorDepth?s.colorDepth:s.pixelDepth))+";u"+escape(d.URL)+
+                    ";h"+escape(d.title.substring(0,150))+";"+Math.random()})
+                    (document,screen)</script>
+            </div>
+            <div class="footer-copyright">
+                &copy; <?php echo date('Y'); ?> OdinTV IPTV Playlist Manager
+            </div>
+            <div class="footer-github">
+                <a href="https://github.com/OdinTV-IPTV-Playlist-manager/OdinTV-IPTV-Manager" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
