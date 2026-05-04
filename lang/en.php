@@ -70,6 +70,8 @@ return [
     'invalid_url' => 'Invalid URL',
     'file_upload_error' => 'Error uploading file',
     'invalid_file_extension' => 'Please upload a file with .m3u or .m3u8 extension',
+    'choose_file' => 'Choose File',
+    'no_file_chosen' => 'No file chosen',
     // edit_channel.php
     'edit_channel_title' => 'Edit channel',
     'channel_name_label' => 'Channel name:',

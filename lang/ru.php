@@ -70,6 +70,8 @@ return [
     'invalid_url' => 'Некорректная ссылка',
     'file_upload_error' => 'Ошибка при загрузке файла',
     'invalid_file_extension' => 'Пожалуйста, загрузите файл с расширением .m3u или .m3u8',
+    'choose_file' => 'Выберите файл',
+    'no_file_chosen' => 'Файл не выбран',
     // edit_channel.php
     'edit_channel_title' => 'Редактировать канал',
     'channel_name_label' => 'Название канала:',
