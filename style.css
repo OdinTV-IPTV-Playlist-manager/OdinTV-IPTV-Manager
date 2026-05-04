@@ -959,3 +959,50 @@ input[type="file"][data-text]::after {
         color: #000 !important;
     }
 }
+/* Footer styles */
+.site-footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.footer-counter {
+    display: flex;
+    align-items: center;
+}
+
+.footer-copyright {
+    color: #6c757d;
+    font-size: 14px;
+    text-align: center;
+}
+
+.footer-github a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.footer-github a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
