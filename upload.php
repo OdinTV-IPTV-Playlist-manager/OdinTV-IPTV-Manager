@@ -1,10 +1,9 @@
 <?php
-session_start();
 require_once 'functions.php';
 
 // Инициализация языка
-$lang = $_SESSION['lang'] ?? 'ru';
-$t = getTranslation($lang);
+$lang = getCurrentLanguage();
+$t = loadTranslations();
 $availableLanguages = getAvailableLanguages();
 
 $message = '';

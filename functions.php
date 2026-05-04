@@ -17,7 +17,9 @@ function getPlaylists() {
 }
 
 function getCurrentPlaylist() {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     if (isset($_SESSION['current_playlist']) && file_exists(PLAYLISTS_DIR . $_SESSION['current_playlist'])) {
         return $_SESSION['current_playlist'];
     }
@@ -29,7 +31,9 @@ function getCurrentPlaylist() {
 }
 
 function setCurrentPlaylist($filename) {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     if (file_exists(PLAYLISTS_DIR . $filename)) {
         $_SESSION['current_playlist'] = $filename;
         return true;
@@ -69,9 +73,11 @@ function getAvailableLanguages() {
  * @return string Код текущего языка
  */
 function getCurrentLanguage() {
-    session_start();
-    if (isset($_SESSION['language']) && file_exists(LANG_DIR . $_SESSION['language'] . '.php')) {
-        return $_SESSION['language'];
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (isset($_SESSION['lang']) && file_exists(LANG_DIR . $_SESSION['lang'] . '.php')) {
+        return $_SESSION['lang'];
     }
     // Язык по умолчанию - русский
     if (file_exists(LANG_DIR . 'ru.php')) {
@@ -88,9 +94,11 @@ function getCurrentLanguage() {
  * @return bool Успешность установки
  */
 function setLanguage($lang) {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     if (file_exists(LANG_DIR . $lang . '.php')) {
-        $_SESSION['language'] = $lang;
+        $_SESSION['lang'] = $lang;
         return true;
     }
     return false;
@@ -322,7 +330,9 @@ function sortChannelsByCategoryAndName($channels) {
 
 // Обработка запроса на смену языка через AJAX
 if (isset($_GET['set_lang'])) {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     $newLang = preg_replace('/[^a-z]/i', '', $_GET['set_lang']);
     if (!empty($newLang) && file_exists(LANG_DIR . $newLang . '.php')) {
         $_SESSION['lang'] = $newLang;
