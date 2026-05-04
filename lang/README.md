@@ -67,6 +67,22 @@ return [
     'video_no_js' => 'Для просмотра видео включите JavaScript',
     'language' => 'Язык',
     'select_language' => 'Выберите язык',
+    
+    // Страница загрузки (upload.php)
+    'upload_from_computer' => 'Загрузка с компьютера',
+    'upload_from_url' => 'Загрузка по ссылке',
+    'select_m3u_file' => 'Выберите M3U/M3U8 файл:',
+    'choose_file' => 'Выберите файл',
+    'no_file_chosen' => 'Файл не выбран',
+    'upload_file_btn' => 'Загрузить файл',
+    'playlist_url_label' => 'Ссылка на плейлист (m3u/m3u8):',
+    'upload_url_btn' => 'Загрузить по ссылке',
+    'existing_playlists' => 'Существующие плейлисты:',
+    'switch_to' => 'Переключиться',
+    'link' => 'Ссылка',
+    'copy_link' => 'Копировать ссылку',
+    'link_copied' => 'Ссылка скопирована в буфер обмена',
+    'switch_to_playlist' => 'Переключиться на этот плейлист',
 ];
 ```
 

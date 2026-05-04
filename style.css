@@ -318,6 +318,7 @@ h1 {
 input[type="file"] {
     padding: 8px;
     cursor: pointer;
+    position: relative;
 }
 
 input[type="file"]::file-selector-button {
@@ -333,6 +334,14 @@ input[type="file"]::file-selector-button {
 
 input[type="file"]::file-selector-button:hover {
     background-color: #2980b9;
+}
+
+/* Отображение кастомного текста для file input */
+input[type="file"][data-text]::after {
+    content: attr(data-text);
+    margin-left: 10px;
+    color: #555;
+    font-size: 14px;
 }
 
 .form-group small {
