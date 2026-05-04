@@ -123,7 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
             <form method="POST" enctype="multipart/form-data" class="upload-form">
                 <div class="form-group">
                     <label for="playlist"><?php echo htmlspecialchars($t['select_m3u_file'] ?? 'Выберите M3U/M3U8 файл:'); ?></label>
-                    <input type="file" id="playlist" name="playlist" accept=".m3u,.m3u8" required>
+                    <input type="file" id="playlist" name="playlist" accept=".m3u,.m3u8" required 
+                           data-choose-file="<?php echo htmlspecialchars($t['choose_file'] ?? 'Выберите файл'); ?>"
+                           data-no-file-chosen="<?php echo htmlspecialchars($t['no_file_chosen'] ?? 'Файл не выбран'); ?>">
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"><?php echo htmlspecialchars($t['upload_file_btn'] ?? 'Загрузить файл'); ?></button>
@@ -156,9 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
                     if ($file !== '.' && $file !== '..' && preg_match('/\.m3u8?$/i', $file)) {
                         $fileUrl = $baseUrl . 'playlists/' . urlencode($file);
                         echo '<li>' . htmlspecialchars($file) . 
-                             ' <a href="index.php?switch=' . urlencode($file) . '" class="btn btn-small btn-primary">Переключиться</a>' .
-                             ' <a href="' . $fileUrl . '" class="btn btn-small btn-secondary" target="_blank">Ссылка</a>' .
-                             ' <button onclick="copyToClipboard(\'' . $fileUrl . '\')" class="btn btn-small btn-copy">Копировать ссылку</button>' .
+                             ' <a href="index.php?switch=' . urlencode($file) . '" class="btn btn-small btn-primary">' . htmlspecialchars($t['switch_to'] ?? 'Переключиться') . '</a>' .
+                             ' <a href="' . $fileUrl . '" class="btn btn-small btn-secondary" target="_blank">' . htmlspecialchars($t['link'] ?? 'Ссылка') . '</a>' .
+                             ' <button onclick="copyToClipboard(\'' . $fileUrl . '\')" class="btn btn-small btn-copy">' . htmlspecialchars($t['copy_link'] ?? 'Копировать ссылку') . '</button>' .
                              '</li>';
                     }
                 }
@@ -168,6 +170,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
     </div>
     
     <script>
+    // Перевод для input type="file"
+    var chooseFileText = '<?php echo htmlspecialchars($t['choose_file'] ?? 'Выберите файл'); ?>';
+    var noFileChosenText = '<?php echo htmlspecialchars($t['no_file_chosen'] ?? 'Файл не выбран'); ?>';
+    
+    function updateFileInputText() {
+        var fileInput = document.getElementById('playlist');
+        if (fileInput) {
+            if (fileInput.files && fileInput.files.length > 0) {
+                fileInput.setAttribute('data-text', chooseFileText + ': ' + fileInput.files[0].name);
+            } else {
+                fileInput.setAttribute('data-text', noFileChosenText);
+            }
+        }
+    }
+    
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFileInputText();
+        var fileInput = document.getElementById('playlist');
+        if (fileInput) {
+            fileInput.addEventListener('change', updateFileInputText);
+        }
+    });
+    
     function changeLanguage(lang) {
         fetch('functions.php?set_lang=' + lang, { credentials: 'same-origin' })
             .then(() => location.reload());
