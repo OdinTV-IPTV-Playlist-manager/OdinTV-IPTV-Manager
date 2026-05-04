@@ -125,7 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
                     <label for="playlist"><?php echo htmlspecialchars($t['select_m3u_file'] ?? 'Выберите M3U/M3U8 файл:'); ?></label>
                     <input type="file" id="playlist" name="playlist" accept=".m3u,.m3u8" required 
                            data-choose-file="<?php echo htmlspecialchars($t['choose_file'] ?? 'Выберите файл'); ?>"
-                           data-no-file-chosen="<?php echo htmlspecialchars($t['no_file_chosen'] ?? 'Файл не выбран'); ?>">
+                           data-no-file-chosen="<?php echo htmlspecialchars($t['no_file_chosen'] ?? 'Файл не выбран'); ?>"
+                           data-text="<?php echo htmlspecialchars($t['no_file_chosen'] ?? 'Файл не выбран'); ?>">
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary"><?php echo htmlspecialchars($t['upload_file_btn'] ?? 'Загрузить файл'); ?></button>
@@ -185,13 +186,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
         }
     }
     
-    // Инициализация при загрузке страницы
+    // Инициализация при загрузке страницы и после смены языка
     document.addEventListener('DOMContentLoaded', function() {
         updateFileInputText();
         var fileInput = document.getElementById('playlist');
         if (fileInput) {
             fileInput.addEventListener('change', updateFileInputText);
         }
+        
+        // Обновляем текст при смене языка (после перезагрузки страницы)
+        setTimeout(updateFileInputText, 100);
     });
     
     function changeLanguage(lang) {
