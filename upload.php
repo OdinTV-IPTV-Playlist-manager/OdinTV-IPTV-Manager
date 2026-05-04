@@ -157,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['playlist'])) {
                 $baseUrl .= rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
                 foreach ($files as $file) {
                     if ($file !== '.' && $file !== '..' && preg_match('/\.m3u8?$/i', $file)) {
-                        $fileUrl = $baseUrl . 'playlists/' . urlencode($file);
+                        $fileUrl = $baseUrl . 'playlists/' . rawurlencode($file);
                         echo '<li>' . htmlspecialchars($file) . 
-                             ' <a href="index.php?switch=' . urlencode($file) . '" class="btn btn-small btn-primary">' . htmlspecialchars($t['switch_to'] ?? 'Переключиться') . '</a>' .
+                             ' <a href="index.php?switch=' . rawurlencode($file) . '" class="btn btn-small btn-primary">' . htmlspecialchars($t['switch_to'] ?? 'Переключиться') . '</a>' .
                              ' <a href="' . $fileUrl . '" class="btn btn-small btn-secondary" target="_blank">' . htmlspecialchars($t['link'] ?? 'Ссылка') . '</a>' .
                              ' <button onclick="copyToClipboard(\'' . $fileUrl . '\')" class="btn btn-small btn-copy">' . htmlspecialchars($t['copy_link'] ?? 'Копировать ссылку') . '</button>' .
                              '</li>';
