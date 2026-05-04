@@ -7,8 +7,17 @@
 ### Файлы языков
 
 Имя файла должно соответствовать коду языка:
-- `ru.php` - Русский язык
-- `en.php` - English (Английский)
+- `ru.php` - Русский язык (🇷🇺)
+- `en.php` - English (Английский, 🇬🇧)
+- `et.php` - Eesti (Эстонский, 🇪🇪)
+- `lv.php` - Latviešu (Латышский, 🇱🇻)
+- `lt.php` - Lietuvių (Литовский, 🇱🇹)
+- `it.php` - Italiano (Итальянский, 🇮🇹)
+- `es.php` - Español (Испанский, 🇪🇸)
+- `cs.php` - Čeština (Чешский, 🇨🇿)
+- `hy.php` - Հայերեն (Армянский, 🇦🇲)
+- `ka.php` - ქართული (Грузинский, 🇬🇪)
+- `be.php` - Беларуская (Белорусский, 🇧🇾)
 - `uk.php` - Українська (Украинский)
 - `de.php` - Deutsch (Немецкий)
 - и т.д.
@@ -60,10 +69,8 @@ return [
     'edit' => 'Редактировать',
     'delete' => 'Удалить',
     'check' => 'Проверить',
-    'move_check' => 'CHECK',
-    'move_bad' => 'BAD',
-    'move_good' => 'GOOD',
-    'move_work' => 'WORK',
+    'move_to_bad' => 'Переместить в BAD',
+    'move_to_work' => 'Переместить в WORK',
     'video_no_js' => 'Для просмотра видео включите JavaScript',
     'language' => 'Язык',
     'select_language' => 'Выберите язык',

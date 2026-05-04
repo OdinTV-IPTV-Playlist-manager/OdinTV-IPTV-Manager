@@ -212,10 +212,8 @@ $t = loadTranslations();
                                 <button onclick="deleteChannel(<?php echo $index; ?>)" class="btn btn-small btn-delete"><?php echo htmlspecialchars($t['delete'] ?? 'Удалить'); ?></button>
                             </div>
                             <div class="action-row">
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'CHECK')" class="btn btn-small btn-move-check"><?php echo htmlspecialchars($t['move_check'] ?? 'CHECK'); ?></button>
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'BAD')" class="btn btn-small btn-move-bad"><?php echo htmlspecialchars($t['move_bad'] ?? 'BAD'); ?></button>
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'GOOD')" class="btn btn-small btn-move-good"><?php echo htmlspecialchars($t['move_good'] ?? 'GOOD'); ?></button>
-                                <button onclick="moveChannel(<?php echo $index; ?>, 'WORK')" class="btn btn-small btn-move-work"><?php echo htmlspecialchars($t['move_work'] ?? 'WORK'); ?></button>
+                                <button onclick="moveChannel(<?php echo $index; ?>, 'BAD')" class="btn btn-small btn-move-bad"><?php echo htmlspecialchars($t['move_to_bad'] ?? 'Переместить в BAD'); ?></button>
+                                <button onclick="moveChannel(<?php echo $index; ?>, 'WORK')" class="btn btn-small btn-move-work"><?php echo htmlspecialchars($t['move_to_work'] ?? 'Переместить в WORK'); ?></button>
                             </div>
                         </div>
                     </td>
